@@ -415,125 +415,24 @@ COLLISION_DIST = 0.8
 # Clases de bajo nivel con Manejo de Errores
 # =========================
 class Motor:
-    def __init__(self):
-        self.__speed = 0.0
-
-    @property
-    def speed(self):
-        return self.__speed
-
-    @speed.setter
-    def speed(self, value):
-        # Validación con lanzamiento de error
-        if not isinstance(value, (int, float, np.float64)):
-            raise ValueError(f"Velocidad inválida: {value}. Debe ser un número.")
-        # Saturación física
-        self.__speed = max(min(float(value), 5.0), -5.0)
-
-    def start(self):
-        self.speed = 0.0
+    pass
 
 
 class SensorDeEnemigo:
-    def __init__(self, angle_offset):
-        self.__angle_offset = angle_offset
-        self.__detected = False
-
-    @property
-    def angle_offset(self): return self.__angle_offset
-    @property
-    def detected(self): return self.__detected
-
-    def start(self):
-        self.__detected = False
-
-    def sense(self, robot_pos, robot_angle, enemy_pos):
-        angle = robot_angle + self.__angle_offset
-        direction = np.array([np.cos(angle), np.sin(angle)])
-        vec = enemy_pos - robot_pos
-        dist = np.linalg.norm(vec)
-        
-        if dist == 0:
-            self.__detected = False
-            return False
-
-        proj = np.dot(vec, direction)
-        theta = np.arccos(np.clip(proj / (np.linalg.norm(direction) * dist), -1.0, 1.0))
-        self.__detected = (dist < SENSOR_RANGE) and (abs(theta) < np.pi / 20)
-        return self.__detected
+    pass
 
 
 class SensorDeLinea:
-    def __init__(self, offset):
-        self.__offset = offset
-        self.__detected = False
-
-    @property
-    def detected(self): return self.__detected
-
-    def start(self):
-        self.__detected = False
-
-    def sense(self, robot_pos, robot_angle):
-        rot = np.array([
-            [np.cos(robot_angle), -np.sin(robot_angle)],
-            [np.sin(robot_angle),  np.cos(robot_angle)]
-        ])
-        pos = robot_pos + rot @ self.__offset
-        self.__detected = np.linalg.norm(pos) >= (RING_RADIUS - RING_BORDER / 2)
-        return self.__detected
+    pass
 
 
 # =========================
 # Clase principal: MySumoPro
 # =========================
 class MySumoPro:
-    def __init__(self, pos, angle=0.0):
-        self.__pos = np.array(pos, dtype=float)
-        self.__angle = angle
-        self.__left_motor = Motor()
-        self.__right_motor = Motor()
-        self.__enemy_sensors = [SensorDeEnemigo(np.pi/4), SensorDeEnemigo(0.0), SensorDeEnemigo(-np.pi/4)]
-        self.__line_sensors = [SensorDeLinea(np.array([0.6, 0.6])), SensorDeLinea(np.array([0.6, -0.6]))]
+    pass
 
-    @property
-    def pos(self): return self.__pos
-    @property
-    def angle(self): return self.__angle
-    @property
-    def enemy_sensors(self): return self.__enemy_sensors
-
-    def start(self):
-        self.__left_motor.start()
-        self.__right_motor.start()
-        for s in self.__enemy_sensors + self.__line_sensors:
-            s.start()
-
-    def move(self, left, right):
-        # El uso de setters puede lanzar excepciones que deben capturarse arriba
-        self.__left_motor.speed = left
-        self.__right_motor.speed = right
-
-    def manager(self, enemy_pos):
-        if any(s.sense(self.__pos, self.__angle) for s in self.__line_sensors):
-            self.move(-2, -2)
-            return
-
-        det = [s.sense(self.__pos, self.__angle, enemy_pos) for s in self.__enemy_sensors]
-        if det[1]: self.move(4, 4)
-        elif det[0]: self.move(1, 3)
-        elif det[2]: self.move(3, 1)
-        else: self.move(1.5, -1.5)
-
-    def update(self):
-        v = (self.__left_motor.speed + self.__right_motor.speed) / 2
-        w = (self.__right_motor.speed - self.__left_motor.speed)
-        self.__angle += w * DT * 0.3
-        self.__pos += v * np.array([np.cos(self.__angle), np.sin(self.__angle)]) * DT
-
-    def __str__(self):
-        return f"Sumo Pro en ({self.__pos[0]:.1f}, {self.__pos[1]:.1f})"
-
+    
 # =========================
 # Ejecución con Try-Except
 # =========================
