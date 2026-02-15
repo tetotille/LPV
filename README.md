@@ -1,7 +1,7 @@
 ## Lenguaje de Programación Visual  
 ### Ingeniería Mecatrónica
 
-**Clase 1: Programación Orientada a Objetos (POO)** 
+**Semana 1: Programación Orientada a Objetos (POO)** 
 
 ---
 
