@@ -5,17 +5,18 @@
 **Semana 2: Diseño UI y Layouts con PyQt6**
 
 
-**PyQt** es una libreria de Python para crear aplicaciones GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde el 1999. La ultima versión basada en Qt6 es **PyQt6** publicada en 2021 con actualizaciones continuas.
+**PyQt** es una librería de Python para crear aplicaciones GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde el 1999. La ultima versión basada en Qt6 es **PyQt6** publicada en 2021 con actualizaciones continuas.
 
 PyQt6 puedes crear ventanas, botones, etiquetas de texto, campos de entrada, layouts (diseños), menús, eventos interactivos y aplicaciones completas con interfaz gráfica.
 
 Funciona mediante una arquitectura basada en:
-* **App** → controla la aplicación
+* **QApplication** → controla la aplicación
 * **Siganls, Slots and Events** → comunicación entre eventos y funciones
-* **Widgets** → elementos visuales
-* **Layouts** → organización de widgets
-* **Menus** → menús
-* **Dialogs** → ventanas emergentes
+* **QWidgets** → elementos visuales
+* **Layouts** → organización de QWidgets
+* **Menus and Toolbars** → menús y barras de herramientas
+
+Como el desarrollo de aplicaciones con Qt meramente con código Python puede ser muy tedioso y poco optimo para interfaces complejas, se puede utilizar el entorno de diseño Qt Designer para crear interfaces de usuarios de forma visual, sin embargo, es necesario tener conocimientos básicos de Qt para poder utilizar este entorno.
 
 **Instalación de dependencias**
 
@@ -37,7 +38,7 @@ La clase `QApplication` es la encargada de gestionar todos los recursos de la ap
 
 Solo debe haber una y solo una instancia de `QApplication` por aplicación.
 
-Ejemplo basico de `app.py`:
+Ejemplo básico de `app.py`:
 ```python
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
 
@@ -57,7 +58,7 @@ Un Widgets son elementos visuales de la aplicación, por ejemplo un botón, un c
 
 ### 1. Widgets básicos
 
-Todos los widgets de Qt son clases hijas de QWidget, de entre los cuales tenemos los widgets elementales o basicos:
+Todos los widgets de Qt son clases hijas de QWidget, de entre los cuales tenemos los widgets elementales o básicos:
 
 * QLabel: texto
 ```python3
@@ -98,7 +99,7 @@ slider.setValue(50)
 
 
 
-Ejemplo unificado de widgets basicos:
+Ejemplo unificado de widgets básicos:
 
 ```python
 import sys
@@ -152,7 +153,7 @@ sys.exit(app.exec())
 ```
 ### 2. QMainWindow
 
-QMainWindow es una clase que contiene un set de widgets modificables por herencia como la barra de menú, la barra de herramientas, la barra de estado, entre otros. Además, pueden incorporarse widgets básicos que interactúan dentro de la clase preprogramada modulando asi el codigo entre app.py y demas modulos.
+QMainWindow es una clase que contiene un set de widgets modificables por herencia como la barra de menú, la barra de herramientas, la barra de estado, entre otros. Además, pueden incorporarse widgets básicos que interactúan dentro de la clase preprogramada modulando asi el código entre app.py y demás módulos.
 
 Ejemplo básico
 
@@ -170,7 +171,7 @@ class MyWindow(QMainWindow):
         button.clicked.connect(self.on_click)
 
     def on_click(self):
-        print("Evento de boton presionado")
+        print("Evento de botón presionado")
 ```
 
 En `app.py`:
@@ -187,7 +188,7 @@ app.exec()
 
 ## Events, Signals and Slots
 
-Los `Signals` son notificaciones  emitidas por un widget como respuesta a un `Event`, es decir, cuando algo ocurre como: como presionar un boton o cuando el texto de un inputbox cambia
+Los `Signals` son notificaciones  emitidas por un widget como respuesta a un `Event`, es decir, cuando algo ocurre como: como presionar un botón o cuando el texto de un inputbox cambia
 
 Los `Slots` son funciones que se ejecutan cuando se emite un `Signal`, son equivalente de los `EventListeners` o `handler` de otros lenguajes.
 
