@@ -5,9 +5,9 @@
 **Semana 2: Diseño UI y Layouts con PyQt6**
 
 
-**PyQt** es una librería de Python para crear aplicaciones GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde el 1999. La ultima versión basada en Qt6 es **PyQt6** publicada en 2021 con actualizaciones continuas.
+**PyQt** es una librería de Python para crear aplicaciónes GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde el 1999. La ultima versión basada en Qt6 es **PyQt6** publicada en 2021 con actualizaciones continuas.
 
-PyQt6 puedes crear ventanas, botones, etiquetas de texto, campos de entrada, layouts (diseños), menús, eventos interactivos y aplicaciones completas con interfaz gráfica.
+PyQt6 puedes crear ventanas, botones, etiquetas de texto, campos de entrada, layouts (diseños), menús, eventos interactivos y aplicaciónes completas con interfaz gráfica.
 
 Funciona mediante una arquitectura basada en:
 * **QApplication** → controla la aplicación
@@ -16,7 +16,7 @@ Funciona mediante una arquitectura basada en:
 * **Layouts** → organización de QWidgets
 * **Menus and Toolbars** → menús y barras de herramientas
 
-Como el desarrollo de aplicaciones con Qt meramente con código Python puede ser muy tedioso y poco optimo para interfaces complejas, se puede utilizar el entorno de diseño Qt Designer para crear interfaces de usuarios de forma visual, sin embargo, es necesario tener conocimientos básicos de Qt para poder utilizar este entorno.
+Como el desarrollo de aplicaciónes con Qt meramente con código Python puede ser muy tedioso y poco optimo para interfaces complejas, se puede utilizar el entorno de diseño Qt Designer para crear interfaces de usuarios de forma visual, sin embargo, es necesario tener conocimientos básicos de Qt para poder utilizar este entorno.
 
 **Instalación de dependencias**
 
@@ -242,7 +242,7 @@ Adicionalmente, Qt también cuenta con los QtStackedLayout, que permite organiza
 
 Para un mejor entendimiento crearemos un custom widget Color
 
-Codigo de Color en `layout_colorwidget.py`:
+código de Color en `layout_colorwidget.py`:
 
 ```python
 from PyQt6.QtGui import QColor, QPalette
@@ -355,7 +355,7 @@ class MainWindow(QMainWindow):
 
 El ToolBar es una barra de herramientas (usualmente con iconos) que se coloca en la parte superior de la ventana, permite a los usuarios realizar acciones rápidas y comunes.
 
-Usaremos como esqueleto de codigo en `app.py`:
+Usaremos como esqueleto de código en `app.py`:
 ```python
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QAction, QIcon, QKeySequence
@@ -398,7 +398,7 @@ A su vez podemos crear un statusBar con `QStatusBar` y agregarlo a la ventana co
 self.setStatusBar(QStatusBar(self))
 ```
 
-Para agreagar un icono a la barra de herramientas, se puede utilizar el método `setIcon` de la barra de herramientas teniendo en cuenta que el icono debe ser un `QIcon`.
+Para agregar un icono a la barra de herramientas, se puede utilizar el método `setIcon` de la barra de herramientas teniendo en cuenta que el icono debe ser un `QIcon`.
 
 Para este ejemplo usaremos el icono que tenemos en la misma carpeta que el proyecto, el icono es `bug.png`, diseñado por Yusuke Kamiyamane [set de iconos](http://p.yusukekamiyamane.com/)
 
@@ -493,4 +493,36 @@ class MainWindow(QMainWindow):
 ```
 
 ## **Ejercicio**
-...
+
+Desarrollar un reproductor de musica usando pyQt6 con los siguientes elementos:
+- Un barra de menu con `self.menuBar()` y `QAction` para abrir un archivo de audio, la estructura básica es Archivo -> Abrir Archivo
+- Un mosaico de 12 x 23 cuadros de color verde programados con `QGridLayout` que cambiarán de color aleatoriamente por columnas cuando la canción se reproduce
+- Un slider de progreso con `QSlider` que se encargara de controlar y mostrar el tiempo de la cancion
+- Un panel de controles que tendra los botones de `PLAY/PAUSE`, `STOP` y un slider de volumen
+- El mosaico, el slider de progreso y el panel de controles deben estar en `QHBoxLayout` independientes, es decir se tendran 3 filas principales
+
+Para la gestion del audio usaremos el `QMediaPlayer` y `QAudioOutput` de la libreria `PyQt6.QtMultimedia`
+
+Para el mosaico de colores usaremos un custom widget `LEDSquare` que heredara de `QWidget` y que tenga un método `set_state` que cambiara el color del widget dependiendo si está activo o no.
+
+```python
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QWidget
+
+class LEDSquare(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setAutoFillBackground(True)
+        self.setFixedSize(22, 22)
+        self.set_state(False)
+
+    def set_state(self, active):
+        # Color verde brillante para activo, gris oscuro para inactivo
+        color = QColor(0, 255, 150) if active else QColor(30, 30, 30)
+        palette = self.palette()
+        palette.setColor(QPalette.ColorRole.Window, color)
+        self.setPalette(palette)
+```
+
+Toda la aplicación debe programarse en `app.py` dentro de la clase 
+`class MusicPlayerPro(QMainWindow)`
