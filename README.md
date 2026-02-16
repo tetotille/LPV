@@ -501,6 +501,11 @@ Desarrollar un reproductor de musica usando pyQt6 con los siguientes elementos:
 - Un panel de controles que tendra los botones de `PLAY/PAUSE`, `STOP` y un slider de volumen
 - El mosaico, el slider de progreso y el panel de controles deben estar en `QHBoxLayout` independientes, es decir se tendran 3 filas principales
 
+<p align="center">
+  <img src="mediaplayer.png" alt="Reproducor de Musica" width="700">
+</p>
+
+
 Para la gestion del audio usaremos el `QMediaPlayer` y `QAudioOutput` de la libreria `PyQt6.QtMultimedia`
 
 Para el mosaico de colores usaremos un custom widget `LEDSquare` que heredara de `QWidget` y que tenga un método `set_state` que cambiara el color del widget dependiendo si está activo o no.
