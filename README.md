@@ -57,44 +57,99 @@ Un Widgets son elementos visuales de la aplicación, por ejemplo un botón, un c
 
 ### 1. Widgets básicos
 
-Algunos ejemplos comunes:
+Todos los widgets de Qt son clases hijas de QWidget, de entre los cuales tenemos los widgets elementales o basicos:
 
-* QLabel → texto
-* QPushButton → botón
-* QLineEdit → campo de texto
-* QWidget → contenedor base
+* QLabel: texto
+```python3
+window = QWidget()
+label = QLabel("Hola Mecatrónica", parent=window)
+```
+* QPushButton: botón
+```python3
+def on_click():
+    print("Botón presionado")
+window = QWidget()
+button = QPushButton("Presionar", parent=window)
+button.clicked.connect(on_click)
+```
+* QLineEdit: campo de texto
+```python3
+window = QWidget()
+input = QLineEdit("Hola Mecatrónica", parent=window)
+```
+* QCheckBox: checkbox
+```python3
+window = QWidget()
+check = QCheckBox("Checkbox", parent=window)
+``` 
+* QComboBox: combobox
+```python3
+window = QWidget()
+combo = QComboBox(parent=window)
+combo.addItems(["Opción 1", "Opción 2", "Opción 3"])
+```
+* QSlider: slider
+```python3
+window = QWidget()
+slider = QSlider(parent=window)
+slider.setRange(0, 100)
+slider.setValue(50)
+```
+
+
 
 Ejemplo unificado de widgets basicos:
 
 ```python
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QCheckBox, QComboBox, QSlider, QMessageBox
 
-def on_click():
-    print("Botón presionado")
+def mostrar_mensaje():
+    msg = QMessageBox(window)
+    msg.setText("Interacción detectada")
+    msg.exec()
 
 app = QApplication(sys.argv)
 
 window = QWidget()
-window.setWindowTitle("Ejemplo QLabel")
-window.resize(400, 300)
+window.setWindowTitle("Ejemplo Widgets")
+window.resize(400, 450)
 
+# QLabel
 label = QLabel("Hola Mecatrónica", parent=window)
-label.move(120, 130)
+label.move(30, 20)
 
+# QPushButton
 button = QPushButton("Presionar", parent=window)
-button.move(140, 130)
+button.move(30, 60)
+button.clicked.connect(mostrar_mensaje)
 
-input = QLineEdit("Hola Mecatrónica", parent=window)
-input.move(140, 180)
+# QLineEdit
+input_field = QLineEdit("Hola Mecatrónica", parent=window)
+input_field.move(30, 110)
+input_field.returnPressed.connect(mostrar_mensaje)
 
-button.clicked.connect(on_click)
+# QCheckBox
+check = QCheckBox("Checkbox", parent=window)
+check.move(30, 160)
+check.clicked.connect(mostrar_mensaje)
+
+# QComboBox
+combo = QComboBox(parent=window)
+combo.addItems(["Opción 1", "Opción 2", "Opción 3"])
+combo.move(30, 210)
+combo.activated.connect(mostrar_mensaje)
+
+# QSlider
+slider = QSlider(parent=window)
+slider.setRange(0, 100)
+slider.move(30, 260)
+slider.sliderReleased.connect(mostrar_mensaje)
 
 window.show()
 
-app.exec()
+sys.exit(app.exec())
 ```
-
 ### 2. QMainWindow
 
 QMainWindow es una clase que contiene un set de widgets modificables por herencia como la barra de menú, la barra de herramientas, la barra de estado, entre otros. Además, pueden incorporarse widgets básicos que interactúan dentro de la clase preprogramada modulando asi el codigo entre app.py y demas modulos.
@@ -133,3 +188,6 @@ app.exec()
 # Siganls, Slots and Events
 
 Los botones pueden ejecutar funciones cuando se presionan.
+
+# Layouts
+
