@@ -99,7 +99,7 @@ slider.setValue(50)
 
 
 
-Ejemplo unificado de widgets básicos:
+Ejemplo unificado de widgets básicos en `app.py`:
 
 ```python
 import sys
@@ -192,6 +192,8 @@ Los `Signals` son notificaciones  emitidas por un widget como respuesta a un `Ev
 
 Los `Slots` son funciones que se ejecutan cuando se emite un `Signal`, son equivalente de los `EventListeners` o `handler` de otros lenguajes.
 
+Ejemplo básico en `app.py`:
+
 ```python
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
@@ -224,13 +226,271 @@ app.exec()
 ```
 
 ## Layouts
-...
+Una forma relativamente eficiente de organizar los widgets en una ventana es utilizando layouts, estos permiten organizar los widgets de una forma controlada y dinámica.
+Qt cuenta con los siguietes tipos de Layouts de la siguiente tabla:
 
-## Toolbars and Menu
-...
+| Layout | Descripción |
+| --- | --- |
+| QGridLayout | Permite organizar los widgets en un tablero |
+| QHBoxLayout | Permite organizar los widgets en una fila horizontal |
+| QGridLayout | Permite organizar los widgets en un tablero |
+| QVBoxLayout | Permite organizar los widgets en una columna vertical |
+| QFormLayout | Permite organizar los widgets en un formulario |
+| QStackLayout | Permite organizar los widgets en una pila |
 
-## Qt Designer
-...
+Adicionalmente, Qt también cuenta con los QtStackedLayout, que permite organizar los widgets uno encima de otro.
+
+Para un mejor entendimiento crearemos un custom widget Color
+
+Codigo de Color en `layout_colorwidget.py`:
+
+```python
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QWidget
+
+
+class Color(QWidget):
+    def __init__(self, color):
+        super().__init__()
+        self.setAutoFillBackground(True)
+
+        palette = self.palette()
+        palette.setColor(QPalette.ColorRole.Window, QColor(color))
+        self.setPalette(palette)
+```
+En `app.py`
+```python
+import sys
+
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
+
+from layout_colorwidget import Color
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+        widget = Color("red")
+        self.setCentralWidget(widget)
+
+
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+app.exec()
+```
+### QVBoxLayout
+Con `QVBoxLayout` los widgets se organizan en una columna vertical, el primer widget se coloca en la parte superior y el último widget se coloca en la parte inferior de la columna.
+
+En `app.py`:
+```python
+class MainWindow(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+        layout = QVBoxLayout()
+
+        layout.addWidget(Color("red"))
+        layout.addWidget(Color("green"))
+        layout.addWidget(Color("orange"))
+        layout.addWidget(Color("blue"))
+
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+```
+### QHBoxLayout
+Con `QHBoxLayout` los widgets se organizan en una fila horizontal, el primer widget se coloca en la parte izquierda y el último widget se coloca en la parta derecha de la fila.
+
+En `app.py`:
+```python
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+        layout = QHBoxLayout()
+
+        layout.addWidget(Color("red"))
+        layout.addWidget(Color("green"))
+        layout.addWidget(Color("orange"))
+        layout.addWidget(Color("blue"))
+
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+```
+
+### QGridLayout
+Con `QGridLayout` los widgets se organizan como matriz, el primer widget se coloca en la parte superior izquierda y el último widget se coloca en la parte inferior derecha de la matriz.
+
+En `app.py`:
+```python
+from layout_colorwidget import Color
+from PyQt6.QtWidgets import QGridLayout, QMainWindow, QWidget
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+        layout = QGridLayout()
+
+        layout.addWidget(Color("red"), 0, 3)
+        layout.addWidget(Color("green"), 1, 1)
+        layout.addWidget(Color("orange"), 2, 2)
+        layout.addWidget(Color("blue"), 3, 0)
+
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+```
+
+## Toolbars and Menus
+**Toolbars**
+
+El ToolBar es una barra de herramientas (usualmente con iconos) que se coloca en la parte superior de la ventana, permite a los usuarios realizar acciones rápidas y comunes.
+
+Usaremos como esqueleto de codigo en `app.py`:
+```python
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtGui import QAction, QIcon, QKeySequence
+from PyQt6.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QLabel,
+    QMainWindow,
+    QStatusBar,
+    QToolBar,
+)
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+app = QApplication([])
+window = MainWindow()
+window.show()
+app.exec()
+```
+En Qt los los toolBars son creados con `QToolBar`, luego de ser instanciados deben ser agregados a la ventana principal con el método `addToolBar` en la custom class de `QMainWindow`.
+
+```python
+toolbar = QToolBar("My main toolbar")
+self.addToolBar(toolbar)
+```
+
+Para agregar funcionalidades al toolbar, se pueden crear acciones con `QAction`, que son objetos que se pueden conectar a los eventos de los botones
+```python
+button_action = QAction("Your button", self)
+button_action.setStatusTip("This is your button")
+button_action.triggered.connect(self.toolbar_button_clicked)
+toolbar.addAction(button_action)
+```
+
+A su vez podemos crear un statusBar con `QStatusBar` y agregarlo a la ventana con el método `setStatusBar`.
+```python
+self.setStatusBar(QStatusBar(self))
+```
+
+Para agreagar un icono a la barra de herramientas, se puede utilizar el método `setIcon` de la barra de herramientas teniendo en cuenta que el icono debe ser un `QIcon`.
+
+Para este ejemplo usaremos el icono que tenemos en la misma carpeta que el proyecto, el icono es `bug.png`, diseñado por Yusuke Kamiyamane [set de iconos](http://p.yusukekamiyamane.com/)
+
+```python   
+button_action = QAction(QIcon("bug.png"), "&Your button", self)
+```
+
+Resultando asi en `app.py`:
+```python
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+        label = QLabel("Hello!")
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.setCentralWidget(label)
+
+        toolbar = QToolBar("My main toolbar")
+        toolbar.setIconSize(QSize(16, 16))
+        self.addToolBar(toolbar)
+
+        button_action = QAction(QIcon("bug.png"), "Your button", self)
+        button_action.setStatusTip("This is your button")
+        button_action.triggered.connect(self.toolbar_button_clicked)
+        button_action.setCheckable(True)
+        toolbar.addAction(button_action)
+
+        self.setStatusBar(QStatusBar(self))
+
+    def toolbar_button_clicked(self, s):
+        print("click", s)
+```
+
+Los MenuBar son una barra que se encuentra en la parte superior de la ventana (por encima de la barra de herramientas), permite a los usuarios realizar acciones rápidas y desplegar otras herramientas.
+
+**Menu**
+
+En Qt los MenuBars se crean con `menuBar` que es un objeto del `QMainWindow`, por lo que no es instanciado como un elemento nuevo, para agregar funcionalidades se emplea el método `addAction` de la barra de menús.
+
+```python
+menu = self.menuBar()
+file_menu = menu.addMenu("&File")
+file_menu.addAction(button_action)
+```
+
+Resultando en `app.py`:
+```python
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("My App")
+
+        label = QLabel("Hello!")
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.setCentralWidget(label)
+
+        toolbar = QToolBar("My main toolbar")
+        toolbar.setIconSize(QSize(16, 16))
+        self.addToolBar(toolbar)
+
+        button_action = QAction(QIcon("bug.png"), "&Your button", self)
+        button_action.setStatusTip("This is your button")
+        button_action.triggered.connect(self.toolbar_button_clicked)
+        button_action.setCheckable(True)
+        toolbar.addAction(button_action)
+
+        toolbar.addSeparator()
+
+        button_action2 = QAction(QIcon("bug.png"), "Your &button2", self)
+        button_action2.setStatusTip("This is your button2")
+        button_action2.triggered.connect(self.toolbar_button_clicked)
+        button_action2.setCheckable(True)
+        toolbar.addAction(button_action2)
+
+        toolbar.addWidget(QLabel("Hello"))
+        toolbar.addWidget(QCheckBox())
+
+        self.setStatusBar(QStatusBar(self))
+
+        menu = self.menuBar()
+
+        file_menu = menu.addMenu("&File")
+        file_menu.addAction(button_action)
+        file_menu.addSeparator()
+        file_menu.addAction(button_action2)
+
+    def toolbar_button_clicked(self, s):
+        print("click", s)
+```
 
 ## **Ejercicio**
 ...
