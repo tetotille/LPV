@@ -5,27 +5,17 @@
 **Semana 2: Diseño UI y Layouts con PyQt6**
 
 
-**PyQt6** es un framework que permite crear **interfaces gráficas de usuario (GUI)** en Python. Está basado en la biblioteca Qt, que es ampliamente usada en aplicaciones profesionales.
+**PyQt** es una libreria de Python para crear aplicaciones GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde el 1999. La ultima versión basada en Qt6 es **PyQt6** publicada en 2021 con actualizaciones continuas.
 
-Con PyQt6 puedes crear:
+PyQt6 puedes crear ventanas, botones, etiquetas de texto, campos de entrada, layouts (diseños), menús, eventos interactivos y aplicaciones completas con interfaz gráfica.
 
-* Ventanas
-* Botones
-* Etiquetas de texto
-* Campos de entrada
-* Layouts (diseños)
-* Menús
-* Eventos interactivos
-* Aplicaciones completas con interfaz gráfica
-
-PyQt6 funciona mediante una arquitectura basada en:
-
+Funciona mediante una arquitectura basada en:
+* **App** → controla la aplicación
+* **Siganls, Slots and Events** → comunicación entre eventos y funciones
 * **Widgets** → elementos visuales
 * **Layouts** → organización de widgets
-* **Signals & Slots** → comunicación entre eventos y funciones
-* **Aplicación Qt** → motor principal
-
-
+* **Menus** → menús
+* **Dialogs** → ventanas emergentes
 
 **Instalación de dependencias**
 
@@ -41,45 +31,31 @@ Verifica la instalación:
 poetry run python -c "import PyQt6"
 ```
 
+## QtApplication
 
-## Estructura básica de una aplicación PyQt6
+La clase `QApplication` es la encargada de gestionar todos los recursos de la aplicación como el loop permanente de escucha de eventos (pulsar una tecla, mover el mouse, etc.).
 
-Toda aplicación PyQt6 necesita estos componentes principales:
+Solo debe haber una y solo una instancia de `QApplication` por aplicación.
 
-1. QApplication → controla la aplicación
-2. QWidget o QMainWindow → ventana principal
-3. Widgets → elementos visuales
-4. Loop de eventos → mantiene la aplicación activa
-
-
-
-Ejemplo 1: Ventana básica
-
-
+Ejemplo basico de `app.py`:
 ```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
 
-app = QApplication(sys.argv)
+app = QApplication([])
 
 window = QWidget()
-window.setWindowTitle("Mi primera ventana PyQt6")
-window.resize(400, 300)
-
 window.show()
 
 app.exec()
 ```
 
-Ejecutar:
+> Nota: Todos los Qt Wigets pueden ser "ventas", por ejemplo cambiando QWidget por QPushButton("Click") crea un botón, esto es porque todos las clases Qt Widgets son hijas de QWidget.
 
-```bash
-poetry run python main.py
-```
+## Widgets
 
-### Widgets básicos
+Un Widgets son elementos visuales de la aplicación, por ejemplo un botón, un campo de texto, una etiqueta, etc.
 
-Los widgets son los elementos visuales.
+### 1. Widgets básicos
 
 Algunos ejemplos comunes:
 
@@ -88,12 +64,14 @@ Algunos ejemplos comunes:
 * QLineEdit → campo de texto
 * QWidget → contenedor base
 
-
-Ejemplo 2: Agregar un texto (QLabel)
+Ejemplo unificado de widgets basicos:
 
 ```python
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit
+
+def on_click():
+    print("Botón presionado")
 
 app = QApplication(sys.argv)
 
@@ -104,52 +82,11 @@ window.resize(400, 300)
 label = QLabel("Hola Mecatrónica", parent=window)
 label.move(120, 130)
 
-window.show()
-
-app.exec()
-```
-
-Ejemplo 3: Botón (QPushButton)
-
-```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
-
-app = QApplication(sys.argv)
-
-window = QWidget()
-window.setWindowTitle("Ejemplo QPushButton")
-window.resize(400, 300)
-
 button = QPushButton("Presionar", parent=window)
 button.move(140, 130)
 
-window.show()
-
-app.exec()
-```
-
-
-### Signals y Slots (Eventos)
-
-Los botones pueden ejecutar funciones cuando se presionan.
-
-Ejemplo:
-
-```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
-
-def on_click():
-    print("Botón presionado")
-
-app = QApplication(sys.argv)
-
-window = QWidget()
-window.resize(400, 300)
-
-button = QPushButton("Click", parent=window)
-button.move(150, 130)
+input = QLineEdit("Hola Mecatrónica", parent=window)
+input.move(140, 180)
 
 button.clicked.connect(on_click)
 
@@ -158,170 +95,41 @@ window.show()
 app.exec()
 ```
 
-### Layouts (Organización automática)
+### 2. QMainWindow
 
-Los layouts permiten organizar widgets automáticamente.
+QMainWindow es una clase que contiene un set de widgets modificables por herencia como la barra de menú, la barra de herramientas, la barra de estado, entre otros. Además, pueden incorporarse widgets básicos que interactúan dentro de la clase preprogramada modulando asi el codigo entre app.py y demas modulos.
 
-Tipos principales:
+Ejemplo básico
 
-* QVBoxLayout → vertical
-* QHBoxLayout → horizontal
-* QGridLayout → cuadrícula
-
-Ejemplo 4: Layout vertical
-
+En `myWindow.py`:
 ```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QMainWindow, QPushButton
 
-app = QApplication(sys.argv)
-
-window = QWidget()
-window.setWindowTitle("Layout Vertical")
-
-layout = QVBoxLayout()
-
-layout.addWidget(QPushButton("Botón 1"))
-layout.addWidget(QPushButton("Botón 2"))
-layout.addWidget(QPushButton("Botón 3"))
-
-window.setLayout(layout)
-
-window.show()
-
-app.exec()
-```
-
-Ejemplo 5: Layout horizontal
-
-```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout
-
-app = QApplication(sys.argv)
-
-window = QWidget()
-
-layout = QHBoxLayout()
-
-layout.addWidget(QPushButton("Izquierda"))
-layout.addWidget(QPushButton("Centro"))
-layout.addWidget(QPushButton("Derecha"))
-
-window.setLayout(layout)
-
-window.show()
-
-app.exec()
-```
-
-Ejemplo 6: Campo de texto (QLineEdit)
-
-```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QPushButton
-
-def mostrar_texto():
-    print(input.text())
-
-app = QApplication(sys.argv)
-
-window = QWidget()
-
-layout = QVBoxLayout()
-
-input = QLineEdit()
-button = QPushButton("Mostrar texto")
-
-button.clicked.connect(mostrar_texto)
-
-layout.addWidget(input)
-layout.addWidget(button)
-
-window.setLayout(layout)
-
-window.show()
-
-app.exec()
-```
-
-
-### Clase principal usando POO (recomendado)
-
-```python
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
-
-class MainWindow(QWidget):
-
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
-        self.setWindowTitle("Aplicación OOP PyQt6")
-        self.resize(400, 300)
-
-        layout = QVBoxLayout()
-
+        self.setWindowTitle("Mi primera ventana PyQt6")
+        
         button = QPushButton("Click")
-
+        self.setCentralWidget(button)
         button.clicked.connect(self.on_click)
 
-        layout.addWidget(button)
-
-        self.setLayout(layout)
-
     def on_click(self):
-        print("Evento desde clase")
-
-app = QApplication(sys.argv)
-
-window = MainWindow()
-window.show()
-
-app.exec()
+        print("Evento de boton presionado")
 ```
 
-### Widget profesional: QMainWindow
-
-QMainWindow permite agregar:
-
-* barra de menú
-* barra de herramientas
-* barra de estado
-* widget central
-
-Ejemplo básico:
-
+En `app.py`:
 ```python
+from PyQt6.QtWidgets import QApplication
+from myWindow import MyWindow
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
-
-class MainWindow(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("QMainWindow")
-        self.resize(400, 300)
-
-        label = QLabel("Contenido central")
-        self.setCentralWidget(label)
 
 app = QApplication(sys.argv)
-
-window = MainWindow()
+window = MyWindow()
 window.show()
-
 app.exec()
 ```
 
-## Ejercicio recomendado
+# Siganls, Slots and Events
 
-Crear una aplicación que tenga:
-
-* Una ventana
-* Un campo de texto
-* Un botón
-* Una etiqueta que muestre el texto ingresado
-
-
+Los botones pueden ejecutar funciones cuando se presionan.
