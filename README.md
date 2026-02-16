@@ -223,3 +223,13 @@ app.exec()
 ```
 
 ## Layouts
+...
+
+## Toolbars and Menu
+...
+
+## Qt Designer
+...
+
+## **Ejercicio**
+...
