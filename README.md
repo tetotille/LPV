@@ -5,7 +5,7 @@
 **Semana 2: Diseño UI y Layouts con PyQt6**
 
 
-**PyQt** es una librería de Python para crear aplicaciónes GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde el 1999. La ultima versión basada en Qt6 es **PyQt6** publicada en 2021 con actualizaciones continuas.
+**PyQt** es una librería de Python para crear aplicaciónes GUI con Qt toolkit, fue creada por **Riverbank Computing Limited** desarrollada desde 1999. La ultima versión basada en Qt6 es **PyQt6** fue publicada en 2021 con y cuenta con actualizaciones continuas.
 
 PyQt6 puedes crear ventanas, botones, etiquetas de texto, campos de entrada, layouts (diseños), menús, eventos interactivos y aplicaciónes completas con interfaz gráfica.
 
@@ -50,11 +50,11 @@ window.show()
 app.exec()
 ```
 
-> Nota: Todos los Qt Wigets pueden ser "ventas", por ejemplo cambiando QWidget por QPushButton("Click") crea un botón, esto es porque todos las clases Qt Widgets son hijas de QWidget.
+> Nota: Todos los Qt Wigets pueden ser "window", por ejemplo cambiando QWidget por QPushButton("Click") crea un botón, esto es porque todos las clases Qt Widgets son clases hija de QWidget.
 
 ## Widgets
 
-Un Widgets son elementos visuales de la aplicación, por ejemplo un botón, un campo de texto, una etiqueta, etc.
+Los Widgets son elementos visuales de la aplicación, por ejemplo un botón, un campo de texto, una etiqueta, etc.
 
 ### 1. Widgets básicos
 
