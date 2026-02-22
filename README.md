@@ -137,6 +137,11 @@ print("Métodos permitidos:", response.headers.get('Allow'))
 
 Desarrollar una interfaz gráfica (GUI) en `PyQt6` que funcione como cliente para un sistema de chat grupal, utilizando la librería `requests` para interactuar con un servidor API REST mediante el protocolo HTTP.
 
+<p align="center">
+  <img src="chats.png" alt="Reproducor de Musica" width="700">
+</p>
+
+
 **Elementos de la interfaz:**
 
 La aplicación debe incluir de forma obligatoria los siguientes componentes:
@@ -175,9 +180,13 @@ Para probar su aplicacion
 ```bash
 python server.py
 ```
-2. Lanzar la aplicación con:
+2. Lanzar la aplicación para un primer acceso:
 ```bash
 python app.py
+```
+3. Lanzar la aplicación para un segundo acceso (puede realizarse desde otro equipo inclusive):
+```bash
+python app.py   
 ```
 
 El servidor corre por defecto en `http://127.0.0.1:5000`
