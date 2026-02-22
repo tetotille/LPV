@@ -44,189 +44,141 @@ Para interactuar con una API, usualmente envíamos un JASON y recibimos un codig
 
 Codigo de estado | Descripción
 --- | ---
-200, 201 | Petición correcta
-404 | Recurso no encontrado
-500 | Error interno del servidor
+200 - 299 | 200: `OK`, 201: `Created`, 204: `No Content`, etc.
+300 - 399 | 300: `Multiple Choices`, 301: `Moved Permanently`, 304: `Not Modified`, etc.
+400 - 499 | 400: `Bad Request`, 401: `Unauthorized`, 404: `Not Found`, etc.
+500 - 599 | 500: `Internal Server Error`, 501: `Not Implemented`, etc.
 
-### 1. Petición GET
-Se utiliza para obtener datos del servidor.
+### 1. Petición GET (Lectura)
+Se utiliza para obtener datos del servidor sin modificar su estado.
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts/1"
-response = requests.get(url_api)
-if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+url = "http://127.0.0.1:5000/mensajes"
+try:
+    response = requests.get(url, timeout=5)
+    # 200 OK: La petición fue exitosa
+    if response.status_code == 200:
+        print("Mensajes recibidos:", response.json())
+    else:
+        print(f"Error técnico {response.status_code}")
+except requests.exceptions.ConnectionError:
+    print("Error: No se pudo conectar con el servidor.")
 ```
 
-### 2. Petición POST
-Se utiliza para enviar datos al servidor.
+### 2. Petición POST (Escritura/Creación)
+Se utiliza para enviar datos nuevos al servidor, como registrar un usuario o enviar un mensaje.
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts"
-data = {"user": "Carlos", "text": "Esto es un mensaje"}
-response = requests.post(url_api, json=data)
-if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+url = "http://127.0.0.1:5000/registro"
+data = {"user": "Carlos", "password": "123"}
+response = requests.post(url, json=data)
+
+# 201 Created: El recurso se creó con éxito
+if response.status_code == 201:
+    print("Registro exitoso:", response.json())
+# 409 Conflict: El usuario ya existe
+elif response.status_code == 409:
+    print("Error: El usuario ya está registrado.")
 ```
 
 ### 3. Petición PUT
-Se utiliza para actualizar por completo los datos en el servidor
+Se utiliza para actualizar un recurso existente reemplazándolo por completo. Si faltan campos en el envío, el servidor podría borrarlos en el recurso original.
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts/1"
-data = {"user": "Carlos", "text": "Esto es un mensaje nuevo"}
-response = requests.put(url_api, json=data)
+# Actualizar el mensaje con ID 1
+url = "http://127.0.0.1:5000/mensajes/1"
+data = {"user": "Carlos", "text": "Mensaje modificado por completo"}
+response = requests.put(url, json=data)
+
 if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+    print("Recurso reemplazado correctamente.")
 ```
 
 ### 4. Petición PATCH
-Se utiliza para actualizar solo algunos datos del servidor
+Se utiliza una actualización parcial de datos
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts/1"
-data = {"user": "Carlos"}
-response = requests.patch(url_api, json=data)
+url = "http://127.0.0.1:5000/usuarios/carlos"
+data = {"password": "nueva_password_456"} # Solo enviamos el campo a cambiar
+response = requests.patch(url, json=data)
+
 if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+    print("Campo actualizado con éxito.")
 ``` 
 
 ### 5. Petición DELETE
 Se utiliza para eliminar datos del servidor
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts/1"
-response = requests.delete(url_api)
+# Eliminar el mensaje con ID 5
+url = "http://127.0.0.1:5000/mensajes/5"
+response = requests.delete(url)
+
+# 200 OK o 240 No Content son respuestas comunes para éxito
 if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+    print("Mensaje eliminado permanentemente.")
+elif response.status_code == 404:
+    print("Error: El mensaje no existe.")
+```
 
 ### 6. Petición HEAD
-Similar a GET, pero solo devuelve la cabecera del recurso
+Es idéntica a GET, pero no descarga el cuerpo de la respuesta. Útil para verificar si un archivo existe o leer sus cabeceras.
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts/1"
-response = requests.head(url_api)
-if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+url = "http://127.0.0.1:5000/mensajes"
+response = requests.head(url)
+print(f"Tipo de contenido: {response.headers.get('Content-Type')}")
+print(f"Código de respuesta: {response.status_code}")
 ```
 
 ### 7. Petición OPTIONS
 Muestra información sobre las opciones de una petición
 ```python
-url_api = "https://jsonplaceholder.typicode.com/posts/1"
-response = requests.options(url_api)
-if response.status_code == 200:
-    print(response.json())
-else:
-    print(f"Error: {response.status_code}")
+url = "http://127.0.0.1:5000/mensajes"
+response = requests.options(url)
+print("Métodos permitidos:", response.headers.get('Allow'))
 ```
 
 # Ejercicio
 
-Desarrolle un interfaz grafica que emplee la librería `requests` para realizar peticiones HTTP como cliente de un chat grupal. 
+Desarrollar una interfaz gráfica (GUI) en `PyQt6` que funcione como cliente para un sistema de chat grupal, utilizando la librería `requests` para interactuar con un servidor API REST mediante el protocolo HTTP.
 
-En el chat, los usuarios podrán enviar, recibir y eliminar mensajes de texto.
+**Elementos de la interfaz:**
 
-La interfaz debe ser desarrollada en PyQt6 y debe incluir los siguientes elementos graficos:
+La aplicación debe incluir de forma obligatoria los siguientes componentes:
 
-- Una barra de menú con las obciones Menu > Iniciar Chat, Registrarse y Salir
-- Una panel principal donde se visualizará el chat, los chats de cada usuario seran de un color distintivo
-- Un panel de control en la parte inferior con un botón de enviar mensaje y un campo de texto para escribir el mensaje
+- Barra de menu:
+    - Menu > Iniciar Sesión: Abre un diálogo para registrar o iniciar sesión
+    - Menu > Registrarse: Abre un diálogo para registrar un nuevo usuario
+    - Menu > Salir: Finaliza la sesion y cierra la aplicación
 
-Para gestionar los mensajes:
-- Mostrar los mensajes del chat en un listado: GET
-- Registrar un usuario, enviar un mensaje: POST
-- Editar un mensaje: PUT
-- Eliminar un mensaje: DELETE
+- Panel de visualización de Chat: Un area de texto (`QTextEdit`) de solo lectura donde se visualizarán los mensajes recibidos.
 
-OBS: Recuerde usar `QTimer` para actualizar la lista de mensajes cada 2 segundos.
+- Panel de Control Inferior: Con un `QLineEdit` para escribir el mensaje y un `QPushButton` para enviar el mensaje.
 
-Para lanzar el servidor descargue y ejecute el archivo `server.py` en una terminal aparte.
-```python
-from flask import Flask, request, jsonify
+- Panel de Estado: Debe mostrar el estado de conexión del usuario actual (Online: Usuario o Offline: Sesión expirada).
 
-app = Flask(__name__)
+**API REST**
 
-# Base de datos en memoria
-usuarios_db = {}        # {usuario: password}
-usuarios_online = set() # Usuarios con sesión activa
-mensajes = [{"id": 1, "usuario": "Sistema", "texto": "Servidor listo. Use el menú para Registrarse o Iniciar Sesión."}]
-contador_id = 2
+El servidor implementa rutas específicas para garantizar que solo usuarios autenticados y con sesión activa puedan participar.
 
-@app.route('/registro', methods=['POST'])
-def registrar_usuario():
-    data = request.json
-    usuario = data.get('user')
-    password = data.get('password')
-    
-    if not usuario or not password:
-        return jsonify({"error": "Datos incompletos"}), 400
+Accion | Método | Endpoint | Comportamiento esperado
+--- | --- | --- | ---
+Registro | POST | `/registro` | Crear un nuevo usuario. Si ya existe, devuelve un error 409.
+Login | POST | `/login` | Verificar la autenticidad del usuario. Si existe no existe, devuelve un error 404.
+Obtener Chat | GET | `/mensajes` | Retorna los mensajes recibidos en formato JSON.
+Enviar mensaje | POST | `/mensajes` | Envia un mensaje al servidor.
+Logout | POST | `/logout` | Cierra la sesión del usuario.
 
-    if usuario in usuarios_db:
-        return jsonify({"error": "El usuario ya existe"}), 409
+**Requisitos de logica:**
+1. Implementar un `QTimer` para actualizar los mensajes cada 2 segundos.
+2. Al cerrar la ventana, realizar un logout automático
+3. Si el servidor responde con un error, el cliente debe limpiar el estado del usuario y solicitar una nueva sesión.
+4. El campo de contraseña debe ocultar los caracteres.
 
-    usuarios_db[usuario] = password
-    usuarios_online.add(usuario) # Login automático tras registro
-    print(f"Nuevo registro: {usuario}")
-    return jsonify({"status": "Usuario creado y conectado"}), 201
-
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.json
-    usuario = data.get('user')
-    password = data.get('password')
-    
-    if not usuario or not password:
-        return jsonify({"error": "Datos incompletos"}), 400
-
-    # VALIDACIÓN CLAVE: Si no existe, error (no se registra automáticamente)
-    if usuario not in usuarios_db:
-        return jsonify({"error": "El usuario no está registrado"}), 404
-    
-    if usuarios_db[usuario] == password:
-        usuarios_online.add(usuario)
-        print(f"Login exitoso: {usuario}")
-        return jsonify({"status": "Sesión iniciada"}), 200
-    else:
-        return jsonify({"error": "Contraseña incorrecta"}), 401
-
-@app.route('/logout', methods=['POST'])
-def logout():
-    usuario = request.json.get('user')
-    if usuario in usuarios_online:
-        usuarios_online.remove(usuario)
-    return jsonify({"status": "Offline"}), 200
-
-@app.route('/mensajes', methods=['GET'])
-def obtener_mensajes():
-    return jsonify(mensajes), 200
-
-@app.route('/mensajes', methods=['POST'])
-def enviar_mensaje():
-    global contador_id
-    data = request.json
-    usuario = data.get('user')
-    texto = data.get('text')
-
-    if usuario not in usuarios_online:
-        return jsonify({"error": "Sesión no iniciada"}), 403
-
-    nuevo_mensaje = {"id": contador_id, "usuario": usuario, "texto": texto}
-    mensajes.append(nuevo_mensaje)
-    contador_id += 1
-    return jsonify(nuevo_mensaje), 201
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+Para probar su aplicacion
+1. Lanzar el servidor con:
+```bash
+python server.py
+```
+2. Lanzar la aplicación con:
+```bash
+python app.py
 ```
 
-
-
-
+El servidor corre por defecto en `http://127.0.0.1:5000`
 
