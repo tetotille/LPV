@@ -8,6 +8,10 @@ En esta guia rapida aprenderemos a crear una base de datos en Supabase, cargar l
 
 La consigna es un entorno grafico para visualizar los registros de clasificacion Zurich-McIntosh de manchas solares y agregar un registro del dia actual, los datos corresponden a registros de manchas solares de la NOAA.
 
+<p align="center">
+  <img src="noaa_hmi_yolo26_db2hat.png" alt="Reproducor de Musica" width="700">
+</p>
+
 1. Primero crea una cuenta en Supabase y vinculada a tu github preferentemente.
 
 2. Crea un proyecto nuevo en Supabase.
@@ -124,3 +128,5 @@ poetry install
 ```bash
 python -m src.solar_srs.main
 ```
+
+La consigna es cargar paralelamente los registros posteriores y si el scroll supera las cargas en paralelo mostrar un loading
