@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "solar-srs-viewer"
+version = "0.1.0"
+description = "Visualizador PyQt6 para registros diarios de manchas solares"
+authors = ["Carlos Benitez"]
+readme = "README.md"
+packages = [{ include = "solar_srs", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pyqt6 = "^6.11.0"
+supabase = "^2.4.0"
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
