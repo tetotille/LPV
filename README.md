@@ -2,7 +2,7 @@
 
 ### Ingeniería Mecatrónica
 
-**Semana 3: Bases de datos**
+**Semana 6: Bases de datos**
 
 En esta guia rapida aprenderemos a crear una base de datos en Supabase, cargar los datos y vincularlos con pyqt6 para su consumo.
 
