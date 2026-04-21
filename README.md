@@ -54,8 +54,7 @@ poetry install
 
 
 ## Tarea: Migración a Arduino
-La consigna migrar el codigo de simulación del servidor a Arduino y cambiar el cliente a comunicación por red a un cliente por comunicación serial, teniendo en cuenta que la estructura del proyecto base es
-Estructura del Proyecto
+La consigna consiste en migrar el codigo de simulación del servidor a Arduino y cambiar el cliente a comunicación por red a un cliente por comunicación serial, teniendo en cuenta que la estructura del proyecto base es:
 ```
 client/src/motor_client/
 ├── main.py              # Punto de entrada
