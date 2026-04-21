@@ -1,2 +1,0 @@
-id,name,version,description,labels_csv_name,num_crops,num_full_disk_images
-be7cb32f-b4a5-5a19-b9bc-fc5c280fddaa,convnextv2_db1_image,v1,Dataset de recortes 224x224 para ConvNeXtV2 + imágenes de disco solar completo.,labels.csv,14026,4283
