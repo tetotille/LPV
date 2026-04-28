@@ -31,6 +31,10 @@ PyQt6 proporciona la clase `QThread` para manejar hilos. La comunicación entre 
 
 ## 3. Proyecto: Emerald Dragon Skin
 
+<p align="center">
+  <img src="image.png" alt="Reproducor de Musica" width="700">
+</p>
+
 Este proyecto simula una "piel de dragón" compuesta por hexágonos reactivos. Al pasar el puntero, los hexágonos cercanos detectan la proximidad y activan una transición esmeralda con efectos de inclinación y escala.
 
 ### Componentes Principales:
