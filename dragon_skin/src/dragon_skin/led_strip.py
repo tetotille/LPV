@@ -13,16 +13,18 @@ class LedStripWidget(QWidget):
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.animate)
-        self.timer.start(30)  # ~33 FPS for smoother motion
+        self.timer.start(30)  # ~60 FPS for smoother motion
 
     def animate(self):
         # Move fractional led for smoother movement
-        self.current_led += self.direction * 0.5
+        # Increased speed from 0.5 to 1.5
+        self.current_led += self.direction * 1.5
         if self.current_led >= self.led_count - 1:
             self.direction = -1
         elif self.current_led <= 0:
             self.direction = 1
         self.update()
+
 
     def paintEvent(self, event):
         painter = QPainter(self)
