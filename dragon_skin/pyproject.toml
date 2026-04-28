@@ -1,0 +1,14 @@
+
+[tool.poetry]
+name = "dragon_skin"
+version = "0.1.0"
+description = "PyQt6 hexagon grid with QThread animation"
+authors = ["Carlos"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+PyQt6 = "^6.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

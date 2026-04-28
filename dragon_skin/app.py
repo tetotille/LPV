@@ -1,10 +1,11 @@
-import sys
+
 from PyQt6.QtWidgets import QApplication
-from .ui.main_window import MotorMonitor
+from src.dragon_skin.main_window import MainWindow
+import sys
 
 def main():
     app = QApplication(sys.argv)
-    window = MotorMonitor()
+    window = MainWindow()
     window.show()
     sys.exit(app.exec())
 
