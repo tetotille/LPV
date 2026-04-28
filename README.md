@@ -39,8 +39,10 @@ Este proyecto simula una "piel de dragón" compuesta por hexágonos reactivos. A
 
 ### Componentes Principales:
 - **HexWorker**: Calcula en segundo plano la distancia del mouse a cada hexágono y determina su "altura" y brillo.
+- **LedStripWidget**: Tira LED animada que utiliza un `QTimer` para efectos visuales fluidos sin sobrecargar el hilo de cálculo principal.
 - **HexWidget**: Recibe los datos y utiliza `QPainter` con gradientes radiales para renderizar el efecto premium.
 - **Inclined Geometry**: Los hexágonos se deforman dinámicamente para simular una elevación 3D hacia el usuario.
+
 
 ---
 
