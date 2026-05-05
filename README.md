@@ -51,7 +51,7 @@ Se utiliza `pandas` para la lectura de archivos CSV. En esta etapa se identifica
 - **Ingeniería de Características**: Se descomponen campos complejos (como `mcintosh_full`) en componentes individuales para un análisis granular.
 
 ### 3. Normalización de Metadatos
-Para que el análisis de componentes principales (PCA) sea efectivo, se aplica una **Estandarización (Z-score normalization)**. Esto escala cada parámetro físico para que tenga una media de 0 y una desviación estándar de 1, evitando que variables con magnitudes grandes dominen el análisis.
+Para que el análisis de componentes principales (PCA) sea efectivo y las entradas sean uniformes, se aplica una **Normalización Min-Max (Rango 0 a 1)**. Esto escala cada parámetro físico de modo que el valor mínimo sea 0 y el máximo sea 1, asegurando que todas las variables contribuyan equitativamente sin importar sus unidades originales.
 
 ### 4. Detección y Retiro de Outliers
 Se emplea el algoritmo **Isolation Forest** sobre los datos normalizados. Este método identifica registros que se alejan significativamente del comportamiento global (anomalías). 
