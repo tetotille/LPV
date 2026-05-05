@@ -1,100 +1,59 @@
 # Lenguaje de Programación Visual  
 ## Ingeniería Mecatrónica
 
-**Semana 8: Concurrencia, hilos y `QThread`**
+**Semana 9: Analisis y Preparacion de Datos**
 
 ---
 
-## 1. Concurrencia en Interfaces Gráficas (GUI)
+## Crear entorno virtual con Conda + Jupyter Notebook
 
-En el desarrollo de aplicaciones con **PyQt6**, el hilo principal (*Main Thread*) es el encargado de gestionar la interfaz de usuario y procesar eventos (como mover el mouse o redimensionar la ventana). Si ejecutamos procesos pesados en este hilo, la interfaz dejará de responder.
+Habiendo instalado [Anaconda](https://www.anaconda.com/products/distribution) o [Miniconda](https://docs.conda.io/en/latest/miniconda.html), para crear un entorno virtual se tienen los siguientes pasos:
 
-Para evitar esto, utilizamos **hilos secundarios**. En ingeniería, esto es vital para:
-- Procesar datos de sensores en tiempo real.
-- Realizar cálculos matemáticos complejos sin bloquear el control.
-- Mantener una visualización fluida (FPS constantes).
+1. Abrir la terminal o consola de Windows.
 
-> **Concepto Clave:** Nunca realices tareas que tomen más de unos pocos milisegundos en el hilo principal. Usa hilos para mantener la fluidez.
-
----
-
-## 2. Implementación de `QThread` y Señales
-
-PyQt6 proporciona la clase `QThread` para manejar hilos. La comunicación entre el hilo de trabajo (Worker) y la interfaz se realiza mediante **Signals** y **Slots**, lo que garantiza que los datos se transfieran de forma segura entre diferentes contextos de memoria.
-
-### Ventajas de este enfoque:
-- **Desacoplamiento**: La lógica matemática (`worker.py`) está separada de la lógica visual (`hex_widget.py`).
-- **Fluidez**: El dibujado de la "Piel de Dragón" no se detiene mientras se calculan las distancias.
-- **Seguridad**: Las señales de Qt gestionan la sincronización de datos automáticamente.
-
----
-
-## 3. Proyecto: Emerald Dragon Skin
-
-<p align="center">
-  <img src="image.png" alt="Reproducor de Musica" width="700">
-</p>
-
-Este proyecto simula una "piel de dragón" compuesta por hexágonos reactivos. Al pasar el puntero, los hexágonos cercanos detectan la proximidad y activan una transición esmeralda con efectos de inclinación y escala.
-
-### Componentes Principales:
-- **HexWorker**: Calcula en segundo plano la distancia del mouse a cada hexágono y determina su "altura" y brillo.
-- **LedStripWidget**: Tira LED animada que utiliza un `QTimer` para efectos visuales fluidos sin sobrecargar el hilo de cálculo principal.
-- **HexWidget**: Recibe los datos y utiliza `QPainter` con gradientes radiales para renderizar el efecto premium.
-- **Inclined Geometry**: Los hexágonos se deforman dinámicamente para simular una elevación 3D hacia el usuario.
-
-
----
-
-## 4. Estructura del Código (Concurrencia)
-
-A continuación se muestra el bloque de código fundamental que permite la comunicación asíncrona entre el motor de cálculo y la visualización:
-
-```python
-# src/dragon_skin/worker.py
-from PyQt6.QtCore import QThread, pyqtSignal
-import math, time
-
-class HexWorker(QThread):
-    # Definición de la señal que transportará la matriz de datos
-    update_signal = pyqtSignal(list)
-
-    def run(self):
-        while self.running:
-            # 1. Obtener posición del mouse
-            # 2. Calcular distancias para cada hexágono (Matriz R x C)
-            # 3. Generar valores de intensidad
-            heights = self.process_logic()
-            
-            # 4. Emitir señal con los nuevos datos
-            self.update_signal.emit(heights)
-            
-            # Control de frecuencia (aprox 30 FPS)
-            time.sleep(0.03)
-
-# src/dragon_skin/hex_widget.py
-class HexWidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        # Instanciar e iniciar el hilo secundario
-        self.worker = HexWorker(self.rows, self.cols)
-        
-        # CONEXIÓN CRÍTICA: Unir la señal del Worker con el Slot de la UI
-        self.worker.update_signal.connect(self.update_heights)
-        self.worker.start()
-
-    def update_heights(self, heights):
-        self.heights = heights
-        self.update() # Provoca la ejecución de paintEvent()
-```
-
----
-
-## 5. Ejecución del Proyecto
-
-Asegúrate de tener instaladas las dependencias mediante **Poetry**:
+2. Crear un entorno virtual con Conda:
 
 ```bash
-poetry install
-poetry run python app.py
+conda create -n lpv2026-1 python=3.12 -y
 ```
+
+3. Activar el entorno virtual:
+
+```bash
+conda activate lpv2026-1
+```
+
+4. Instalar dependencias
+
+```bash
+conda install numpy matplotlib scipy pandas seaborn scikit-learn ipykernel jinja2
+
+```
+
+5. Registro de entorno en Jupyter
+
+```bash
+python -m ipykernel install --user --name lpv2026-1 --display-name "Python (lpv2026-1)"
+```
+
+---
+
+## Flujo de Trabajo: Análisis y Preparación de Datos
+
+El proyecto sigue un pipeline riguroso de preparación de datos para asegurar la calidad del análisis:
+
+### 1. Carga de Datos
+Se utiliza `pandas` para la lectura de archivos CSV. En esta etapa se identifica la estructura del dataset y se separan los parámetros físicos (metadatos) de las etiquetas de clasificación.
+
+### 2. Limpieza Inicial
+- **Tratamiento de Nulos**: Se eliminan todas las filas que contengan valores faltantes (`NaN`) para evitar sesgos en el cálculo estadístico.
+- **Limpieza de Columnas**: Se descartan aquellas columnas que no aportan información relevante o que están completamente vacías.
+- **Ingeniería de Características**: Se descomponen campos complejos (como `mcintosh_full`) en componentes individuales para un análisis granular.
+
+### 3. Normalización de Metadatos
+Para que el análisis de componentes principales (PCA) sea efectivo, se aplica una **Estandarización (Z-score normalization)**. Esto escala cada parámetro físico para que tenga una media de 0 y una desviación estándar de 1, evitando que variables con magnitudes grandes dominen el análisis.
+
+### 4. Detección y Retiro de Outliers
+Se emplea el algoritmo **Isolation Forest** sobre los datos normalizados. Este método identifica registros que se alejan significativamente del comportamiento global (anomalías). 
+- Los outliers son visualizados en un espacio 3D mediante PCA.
+- Finalmente, se retiran estos registros para generar una base de datos "limpia" (`sunspot_data_clean.csv`), ideal para entrenar modelos de aprendizaje automático.
