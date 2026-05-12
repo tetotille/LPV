@@ -12,8 +12,7 @@ Este repositorio contiene un proyecto estructurado en dos módulos. El sistema d
 El flujo de información y la arquitectura del sistema operan bajo un esquema cliente-servidor:
 
 ### 1. Inferencia Optimizada (Torch a ONNX)
-El motor de detección utiliza un modelo YOLO. Para entornos de producción, el modelo se ha convertido desde su formato original de entrenamiento en PyTorch (`.pt`) a la especificación ONNX (Open Neural Network Exchange).
-* **Beneficios técnicos:** Se elimina la dependencia del runtime completo de PyTorch, reduciendo el footprint de memoria. La inferencia se delega a `onnxruntime` (implementado en C/C++), minimizando la carga de CPU y la latencia por procesamiento.
+El motor de detección utiliza un modelo YOLO. Para entornos de producción, el modelo se ha convertido desde su formato original de entrenamiento en PyTorch (`.pt`) a la especificación ONNX (Open Neural Network Exchange). **Beneficios técnicos:** Se elimina la dependencia del runtime completo de PyTorch, reduciendo el footprint de memoria. La inferencia se delega a `onnxruntime` (implementado en C/C++), minimizando la carga de CPU y la latencia por procesamiento.
 
 ### 2. Módulo Servidor (FastAPI)
 Microservicio encargado exclusivamente de la inferencia.
