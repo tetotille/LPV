@@ -17,6 +17,9 @@ El motor de detección utiliza un modelo YOLO. Para entornos de producción, el 
 
 ### 2. Módulo Servidor (FastAPI)
 Microservicio encargado exclusivamente de la inferencia.
+<p align="center">
+  <img src="image-server.png" alt="Test-server" width="700">
+</p>
 * **Interfaz de red:** Expone una API REST con el endpoint asíncrono `POST /detect`.
 * **Recepción de datos:** Acepta peticiones HTTP que contienen buffers binarios de imágenes mediante codificación `multipart/form-data`.
 * **Procesamiento:** 
@@ -27,6 +30,9 @@ Microservicio encargado exclusivamente de la inferencia.
 
 ### 3. Módulo Cliente (PyQt6)
 Aplicación de escritorio encargada de la captura, visualización y transporte de datos.
+<p align="center">
+  <img src="image-client.png" alt="Terminal-client" width="700">
+</p>
 * **Captura:** Extrae frames de hardware local (cámara web) mediante `cv2.VideoCapture`.
 * **Transmisión:** Codifica el frame actual en memoria a JPEG (`cv2.imencode`) y genera una petición POST HTTP síncrona al servidor utilizando la librería `requests`.
 * **Renderizado:** Parsea la respuesta JSON del servidor, interpola las coordenadas de las bounding boxes sobre el array de la imagen original, aplica funciones de dibujado, transforma el resultado a un objeto `QImage` y refresca el renderizado gráfico de PyQt6.
